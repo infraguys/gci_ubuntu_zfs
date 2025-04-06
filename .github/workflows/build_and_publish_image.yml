@@ -1,0 +1,49 @@
+name: packer
+
+on:
+  push:
+
+env:
+  PACKER_VERSION: "latest"
+
+# TODO: we may create separate `publish` job in future
+permissions:
+  contents: write
+
+jobs:
+  build_n_publish:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        ubuntu-release: ["ubuntu-24"]
+    name: Build Image for ${{ matrix.ubuntu-release }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup `packer`
+        uses: hashicorp/setup-packer@main
+        with:
+          version: ${{ env.PACKER_VERSION }}
+      - name: Set up QEMU
+        run: |
+          sudo apt -y update
+          sudo apt install -y qemu-system-amd64 qemu-utils guestfs-tools cloud-image-utils
+      - name: Build image ${{ matrix.ubuntu-release }}
+        run: sudo ./build.sh ${{ matrix.ubuntu-release }}
+      - name: Save artifacts
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.ubuntu-release }} qcow2 image
+          path: templates/${{ matrix.ubuntu-release }}/output/${{ matrix.ubuntu-release }}_zfs.qcow2
+      - name: Publish image (for tags only)
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: templates/${{ matrix.ubuntu-release }}/output/${{ matrix.ubuntu-release }}_zfs.qcow2
+          asset_name: ${{ matrix.ubuntu-release }}_zfs.qcow2
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: "Ubuntu cloud image with root-on-zfs."
