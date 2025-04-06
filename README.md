@@ -12,7 +12,7 @@ So, you'll have nearly vanilla Ubuntu server image, but with ZFS :)
 
 ## Use
 
-See Github releases for already built qcow2 images (zstd-compressed).
+See [Github releases](https://github.com/infraguys/gci_ubuntu_zfs/releases) for already built qcow2 images (zstd-compressed).
 
 ## Customize
 
