@@ -14,6 +14,10 @@ So, you'll have nearly vanilla Ubuntu server image, but with ZFS :)
 
 See Github releases for already built qcow2 images (zstd-compressed).
 
+## Customize
+
+If you don't want to build image locally - just fork and push changes, Github Actions will build image and add it as a build artifact.
+
 ## Build
 
 You can easily build it by yourself, prerequisites:
