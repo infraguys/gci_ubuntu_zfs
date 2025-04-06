@@ -1,12 +1,3 @@
-locals {
-  cd_content = {
-    "meta-data" = yamlencode({
-      instance-id = "iid-local01"
-    })
-
-  }
-}
-
 variable cpus {
   type    = number
   default = 4
