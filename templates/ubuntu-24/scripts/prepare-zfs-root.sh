@@ -68,6 +68,11 @@ zfs create -o com.sun:auto-snapshot=false rpool/var/cache
 zfs create -o com.sun:auto-snapshot=false rpool/var/lib/nfs
 zfs create -o com.sun:auto-snapshot=false rpool/var/tmp
 chmod 1777 /mnt/var/tmp
+
+# Ubuntu server doesn't use tmpfs for /tmp
+zfs create -o com.sun:auto-snapshot=false -o sync=disabled rpool/tmp
+chmod 1777 /mnt/tmp
+
 zfs create rpool/srv
 zfs create -o com.sun:auto-snapshot=false rpool/var/lib/docker
 zfs create rpool/var/mail
